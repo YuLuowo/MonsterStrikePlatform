@@ -1,0 +1,11 @@
+datasource db {
+  provider = "postgresql"
+}
+
+model monsters {
+  name       String
+  image_url  String
+  source_url String
+  createdAt  DateTime @default(now())
+  number     Int      @id
+}
