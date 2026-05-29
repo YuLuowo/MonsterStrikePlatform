@@ -1,7 +1,3 @@
-datasource db {
-  provider = "postgresql"
-}
-
 model monsters {
   name       String
   image_url  String
