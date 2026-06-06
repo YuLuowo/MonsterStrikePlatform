@@ -1,11 +1,7 @@
-import { prisma } from "@repo/db";
-
-export default async function HomePage() {
-    const monster = await prisma.monsters.findFirst();
-
+export default function HomePage() {
     return (
-        <>
-            { monster?.name ?? "No monster found" }
-        </>
+        <main className="flex min-h-screen flex-col items-center justify-center">
+
+        </main>
     );
 }
