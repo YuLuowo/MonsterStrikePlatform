@@ -1,8 +1,19 @@
 model Monsters {
-	name       String
-	image_url  String
-	source_url String
-	createdAt  DateTime @default(now())
-	number     Int      @id
-	element    String
+	number Int @id
+
+	name       String?
+	image_url  String?
+	source_url String?
+
+	element       String?
+	evolution     String?
+	obtain_method String?
+	star          Int?
+	category      String?
+
+	info    String[]
+	passive String[]
+	ss      String?
+
+	createdAt DateTime @default(now())
 }

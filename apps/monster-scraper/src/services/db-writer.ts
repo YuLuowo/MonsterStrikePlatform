@@ -8,6 +8,15 @@ export interface MonsterToInsert {
     element: string | null;
     image_url: string | null;
     source_url: string | null;
+
+    evolution: string | null;
+    obtain_method: string | null;
+    star: number | null;
+    category: string | null;
+
+    info: string[];
+    passive: string[];
+    ss: string | null;
 }
 
 const BATCH_SIZE = 500;
@@ -83,16 +92,47 @@ export async function writeMonstersToDB(
             const translatedBatch = await Promise.all(
                 batch.map(async (m) => ({
                     number: m.number,
-                    name: m.name ? await convertName(m.name) : "",
-                    element: m.element || "",
-                    image_url: m.image_url || "",
-                    source_url: m.source_url || "",
+
+                    name: m.name
+                        ? await convertName(m.name)
+                        : null,
+
+                    element: m.element
+                        ? await convertName(m.element)
+                        : null,
+
+                    image_url: m.image_url,
+                    source_url: m.source_url,
+
+                    evolution: m.evolution
+                        ? await convertName(m.evolution)
+                        : null,
+
+                    obtain_method: m.obtain_method
+                        ? await convertName(m.obtain_method)
+                        : null,
+
+                    star: m.star,
+
+                    category: m.category
+                        ? await convertName(m.category)
+                        : null,
+
+                    info: await Promise.all(
+                        (m.info ?? []).map((x) => convertName(x))
+                    ),
+
+                    passive: await Promise.all(
+                        (m.passive ?? []).map((x) => convertName(x))
+                    ),
+
+                    ss: m.ss
+                        ? await convertName(m.ss)
+                        : null,
                 }))
             );
-
             await prisma.monsters.createMany({
                 data: translatedBatch,
-                skipDuplicates: true,
             });
 
             ctx.stats.totalProcessed += batch.length;

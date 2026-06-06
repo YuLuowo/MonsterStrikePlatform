@@ -98,7 +98,20 @@ export class MonsterScraperPipeline {
         conditions: string,
         pages: number,
         ctx: PipelineContext
-    ): Promise<MonsterToInsert[]> {
+    ): Promise<{
+        number: number;
+        name: string | null;
+        image_url: string | null;
+        source_url: string | null;
+        element: string | null;
+        evolution: string | null;
+        obtain_method: string | null;
+        star: number | null;
+        category: string | null;
+        info: string[];
+        passive: string[];
+        ss: string | null
+    }[]> {
         const allMonsters: MonsterRawData[] = [];
 
         for (let page = 1; page <= pages; page++) {
@@ -136,9 +149,16 @@ export class MonsterScraperPipeline {
         return Array.from(uniqueMap.entries()).map(([number, m]) => ({
             number,
             name: m.name,
-            element: m.element,
             image_url: m.image_url,
             source_url: m.source_url,
+            element: m.element,
+            evolution: m.evolution,
+            obtain_method: m.obtain_method,
+            star: m.star,
+            category: m.category,
+            info: m.info,
+            passive: m.passive,
+            ss: m.ss,
         }));
     }
 

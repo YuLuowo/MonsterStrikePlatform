@@ -10,10 +10,20 @@ export interface WikiConfig {
 
 export interface MonsterRawData {
     number: string;
+
     name: string | null;
-    element: string | null;
     image_url: string | null;
     source_url: string | null;
+
+    element: string | null;
+    evolution: string | null;
+    obtain_method: string | null;
+    star: number | null;
+    category: string | null;
+
+    info: string[];
+    passive: string[];
+    ss: string | null;
 }
 
 const DEFAULT_LIMIT = 100;
@@ -146,6 +156,30 @@ export function parseMonsters(html: string): MonsterRawData[] {
             element = elementMatch[1];
         }
 
+        let evolution: string | null = null;
+        const evolutionMatch = text.match(/data-param2="([^"]*)"/);
+        if (evolutionMatch && evolutionMatch[1]) {
+            evolution = evolutionMatch[1];
+        }
+
+        let obtain_method: string | null = null;
+        const obtain_methodMatch = text.match(/data-param3="([^"]*)"/);
+        if (obtain_methodMatch && obtain_methodMatch[1]) {
+            obtain_method = obtain_methodMatch[1];
+        }
+
+        let star: number | null = null;
+        const starMatch = text.match(/data-param4="([^"]*)"/);
+        if (starMatch && starMatch[1]) {
+            star = Number(starMatch[1]);
+        }
+
+        let category: string | null = null;
+        const categoryMatch = text.match(/data-param5="([^"]*)"/);
+        if (categoryMatch && categoryMatch[1]) {
+            category = categoryMatch[1];
+        }
+
         let number: string | null = null;
         const numberMatch = text.match(/NO\.(\d+)/);
         if (numberMatch && numberMatch[1]) {
@@ -189,6 +223,38 @@ export function parseMonsters(html: string): MonsterRawData[] {
             name = $(lastLink).text().trim();
         }
 
+        let info: string[] = [];
+        let passive: string[] = [];
+        let ss: string | null = null;
+
+        let next = $row.next();
+
+        while (next.length && !next.is("p")) {
+            const infoText = next.find("th.juse-xx").text().trim();
+            if (infoText) {
+                info = infoText
+                    .split("/")
+                    .map((s) => s.trim())
+                    .filter(Boolean);
+            }
+
+            const passiveText = next.find("th.juse-bd").text().trim();
+            if (passiveText) {
+                passive = passiveText
+                    .replace(/\+/g, "/")
+                    .split("/")
+                    .map((s) => s.trim())
+                    .filter(Boolean);
+            }
+
+            const ssText = next.find("th.juse-ss").text().trim();
+            if (ssText) {
+                ss = ssText;
+            }
+
+            next = next.next();
+        }
+
         if (!number) {
             return;
         }
@@ -199,6 +265,15 @@ export function parseMonsters(html: string): MonsterRawData[] {
             element,
             image_url,
             source_url,
+
+            evolution,
+            obtain_method,
+            star,
+            category,
+
+            info,
+            passive,
+            ss,
         });
     });
 
