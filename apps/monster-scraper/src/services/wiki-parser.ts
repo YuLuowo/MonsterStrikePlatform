@@ -16,6 +16,7 @@ export interface MonsterRawData {
     source_url: string | null;
 
     element: string | null;
+    type: string | null;
     evolution: string | null;
     obtain_method: string | null;
     star: number | null;
@@ -23,6 +24,7 @@ export interface MonsterRawData {
 
     info: string[];
     passive: string[];
+    abilities: string[];
     ss: string | null;
 }
 
@@ -135,6 +137,43 @@ export function buildConditions(html: string): string {
     return result + suffix;
 }
 
+const abilityMap: Record<string, string> = {
+    "反重力护罩": "反重力護罩",
+
+    "反伤害壁": "反傷害壁",
+
+    "反传送": "反傳送",
+
+    "扫雷者": "掃雷者",
+    "飞行": "飛行",
+
+    "反板块": "反板塊",
+
+    "反风": "反風",
+
+    "魔法阵": "反魔法陣/增幅",
+
+    "反减速壁": "反減速壁",
+
+    "反转移壁": "反移轉壁",
+
+    "反减速板": "反減速板",
+};
+
+function extractAbilities(passive: string[]): string[] {
+    const abilities = new Set<string>();
+
+    for (const skill of passive) {
+        for (const [keyword, gimmick] of Object.entries(abilityMap)) {
+            if (skill.includes(keyword)) {
+                abilities.add(gimmick);
+            }
+        }
+    }
+
+    return [...abilities];
+}
+
 export function parseMonsters(html: string): MonsterRawData[] {
     const $ = load(html);
     const monsters: MonsterRawData[] = [];
@@ -225,6 +264,7 @@ export function parseMonsters(html: string): MonsterRawData[] {
 
         let info: string[] = [];
         let passive: string[] = [];
+        let abilities: string[] = [];
         let ss: string | null = null;
 
         let next = $row.next();
@@ -245,6 +285,8 @@ export function parseMonsters(html: string): MonsterRawData[] {
                     .split("/")
                     .map((s) => s.trim())
                     .filter(Boolean);
+
+                abilities = extractAbilities(passive);
             }
 
             const ssText = next.find("th.juse-ss").text().trim();
@@ -255,6 +297,8 @@ export function parseMonsters(html: string): MonsterRawData[] {
             next = next.next();
         }
 
+        const type = info[0]?.slice(0, 2) ?? "";
+
         if (!number) {
             return;
         }
@@ -263,6 +307,7 @@ export function parseMonsters(html: string): MonsterRawData[] {
             number,
             name,
             element,
+            type,
             image_url,
             source_url,
 
@@ -273,6 +318,7 @@ export function parseMonsters(html: string): MonsterRawData[] {
 
             info,
             passive,
+            abilities,
             ss,
         });
     });

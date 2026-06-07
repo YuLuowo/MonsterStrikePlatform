@@ -6,14 +6,16 @@ model Monsters {
 	source_url String?
 
 	element       String?
+	type          String?
 	evolution     String?
 	obtain_method String?
 	star          Int?
 	category      String?
 
-	info    String[]
-	passive String[]
-	ss      String?
+	info      String[]
+	passive   String[]
+	abilities String[]
+	ss        String?
 
 	createdAt DateTime @default(now())
 }

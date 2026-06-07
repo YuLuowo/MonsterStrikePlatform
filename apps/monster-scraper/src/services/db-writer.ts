@@ -6,6 +6,7 @@ export interface MonsterToInsert {
     number: number;
     name: string | null;
     element: string | null;
+    type: string | null;
     image_url: string | null;
     source_url: string | null;
 
@@ -16,6 +17,7 @@ export interface MonsterToInsert {
 
     info: string[];
     passive: string[];
+    abilities: string[];
     ss: string | null;
 }
 
@@ -101,6 +103,10 @@ export async function writeMonstersToDB(
                         ? await convertName(m.element)
                         : null,
 
+                    type: m.type
+                        ? await convertName(m.type)
+                        : null,
+
                     image_url: m.image_url,
                     source_url: m.source_url,
 
@@ -125,6 +131,8 @@ export async function writeMonstersToDB(
                     passive: await Promise.all(
                         (m.passive ?? []).map((x) => convertName(x))
                     ),
+
+                    abilities: m.abilities,
 
                     ss: m.ss
                         ? await convertName(m.ss)
