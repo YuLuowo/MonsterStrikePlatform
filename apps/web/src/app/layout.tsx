@@ -5,6 +5,12 @@ import { ThemeProvider } from "next-themes";
 import { Navbar } from "@/components/layout/navbar";
 import { Providers } from "@/components/provider/session-provider";
 import Footer from "@/components/layout/footer";
+import { Noto_Sans_TC } from "next/font/google";
+
+const notoSansTC = Noto_Sans_TC({
+    weight: ["400", "500", "700"],
+    subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
     title: "怪物彈珠平台",
@@ -27,7 +33,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
             lang="en"
             suppressHydrationWarning={true}
         >
-            <body>
+            <body className={notoSansTC.className}>
                 <Providers>
                     <ThemeProvider
                         attribute="class"
