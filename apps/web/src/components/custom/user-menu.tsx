@@ -17,6 +17,7 @@ import {
 
 import { signOut, useSession } from "next-auth/react";
 import LoginButton from "@/components/custom/login-button";
+import { Button } from "@/components/ui/button";
 
 export default function UserMenu() {
     const { data: session, status } = useSession();
@@ -34,7 +35,7 @@ export default function UserMenu() {
     const initials =
         session.user.name?.slice(0, 2).toUpperCase() ?? "U";
 
-    return (
+    const DesktopMenu = (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <div className="cursor-pointer rounded-full">
@@ -79,5 +80,36 @@ export default function UserMenu() {
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
+    );
+
+    const MobileMenu = (
+        <div className="flex flex-col justify-between gap-4">
+            <div className="flex items-center gap-4">
+                <Avatar className="h-8 w-8 cursor-pointer">
+                    <AvatarImage
+                        src={session.user.image ?? ""}
+                        alt={session.user.name ?? ""}
+                    />
+                    <AvatarFallback>
+                        {initials}
+                    </AvatarFallback>
+                </Avatar>
+                <span>{session.user.name}</span>
+            </div>
+            <div className="flex flex-col px-1 gap-4">
+                <span>個人資料</span>
+                <span>設定</span>
+            </div>
+            <Button variant="destructive" onClick={() => signOut()}>
+                登出
+            </Button>
+        </div>
+    );
+
+    return (
+        <>
+            <div className="hidden md:block">{DesktopMenu}</div>
+            <div className="block md:hidden w-full">{MobileMenu}</div>
+        </>
     );
 }
