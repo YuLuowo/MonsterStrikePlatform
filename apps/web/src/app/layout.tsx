@@ -14,15 +14,22 @@ const notoSansTC = Noto_Sans_TC({
 
 export const metadata: Metadata = {
     title: "怪物彈珠平台",
-    description: "探索完整的怪物彈珠圖鑑，深入了解每一隻怪物的特殊能力、屬性與戰術應用。提供詳細的怪物彈珠WIKI知識庫，與玩家共同打造最完善的遊戲資訊平台。",
+    description: "探索怪物彈珠圖鑑，了解每一隻怪物的資料、屬性與被動。擁有怪物彈珠圖鑑與其他正在開發的功能。",
     keywords: "怪物彈珠,怪物彈珠圖鑑,怪物彈珠WIKI,遊戲攻略,怪物介紹,屬性分析,戰隊搭配",
     authors: [{ name: "怪物彈珠平台" }],
     openGraph: {
         type: "website",
         locale: "zh_TW",
         url: "https://ms.imagineyuluo.com",
-        title: "怪物彈珠平台｜完整圖鑑、策略分析、WIKI知識庫",
-        description: "探索完整的怪物彈珠圖鑑，深入了解每一隻怪物的特殊能力、屬性與戰術應用。",
+        title: "怪物彈珠平台",
+        description: "探索怪物彈珠圖鑑，了解每一隻怪物的資料、屬性與被動。擁有怪物彈珠圖鑑與其他正在開發的功能。",
+        images: [
+            {
+                url: "https://ms.imagineyuluo.com/og.png",
+                width: 1200,
+                height: 630,
+            },
+        ],
     },
     robots: "follow, index",
 };
