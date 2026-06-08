@@ -1,7 +1,13 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "globalEnv": ["DATABASE_URL"],
+  "globalEnv": [
+    "DATABASE_URL",
+    "DISCORD_CLIENT_ID",
+    "DISCORD_CLIENT_SECRET",
+    "NEXTAUTH_URL",
+    "NEXTAUTH_SECRET"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build", "^db:generate"],
