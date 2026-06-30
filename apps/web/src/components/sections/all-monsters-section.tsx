@@ -77,9 +77,9 @@ export function AllMonstersSection() {
 
                 const validatedPage = validatePageNumber(result.page, result.totalPages);
                 if (validatedPage !== result.page) {
-                    const newSearchParams = new URLSearchParams(searchParams);
+                    const newSearchParams = new URLSearchParams(searchParams.toString());
                     newSearchParams.set("page", validatedPage.toString());
-                    router.push(`?${newSearchParams.toString()}`, {scroll: false});
+                    router.replace(`?${newSearchParams.toString()}`, {scroll: false});
                 }
             } catch (err) {
                 setError(err instanceof Error ? err.message : "Unknown error occurred");
@@ -95,7 +95,7 @@ export function AllMonstersSection() {
     const handlePageChange = (page: number) => {
         const validatedPage = validatePageNumber(page, data?.totalPages || 1);
 
-        const newSearchParams = new URLSearchParams(searchParams);
+        const newSearchParams = new URLSearchParams(searchParams.toString());
         newSearchParams.set("page", validatedPage.toString());
         router.push(`?${newSearchParams.toString()}`, {scroll: false});
         if (typeof window !== "undefined") {

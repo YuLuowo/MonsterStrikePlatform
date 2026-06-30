@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ELEMENTS, TYPES, ABILITIES } from "@/lib/filter-maps";
 import { Button } from "@/components/ui/button";
@@ -25,8 +25,13 @@ export default function MonsterFilters() {
     const [elements, setElements] = useState<string[]>(initElements);
     const [type, setType] = useState<string | "">(initType);
     const [abilities, setAbilities] = useState<string[]>(initAbilities);
+    const isClearing = useRef(false);
 
     useEffect(() => {
+        if (isClearing.current) {
+            isClearing.current = false;
+            return;
+        }
         setElements(searchParams.get("element")?.split(",").filter(Boolean) ?? []);
         setType(searchParams.get("type") ?? "");
         setAbilities(searchParams.get("abilities")?.split(",").filter(Boolean) ?? []);
@@ -47,15 +52,16 @@ export default function MonsterFilters() {
         if (type) newSearch.set("type", type);
         if (abilities.length) newSearch.set("abilities", abilities.join(","));
 
-        router.push(`?${newSearch.toString()}`);
+        router.replace(`?${newSearch.toString()}`);
         if (typeof window !== "undefined") window.scrollTo({top: 0, behavior: "smooth"});
     };
 
     const onClear = () => {
+        isClearing.current = true;
         setElements([]);
         setType("");
         setAbilities([]);
-        router.push("?page=1");
+        router.replace("?page=1");
         if (typeof window !== "undefined") window.scrollTo({top: 0, behavior: "smooth"});
     };
 
