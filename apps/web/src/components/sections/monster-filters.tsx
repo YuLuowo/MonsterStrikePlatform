@@ -41,26 +41,21 @@ export default function MonsterFilters() {
     };
 
     const onSearch = () => {
-        const newSearch = new URLSearchParams(searchParams);
+        const newSearch = new URLSearchParams();
         newSearch.set("page", "1");
-        if (elements.length) newSearch.set("element", elements.join(",")); else newSearch.delete("element");
-        if (type) newSearch.set("type", type); else newSearch.delete("type");
-        if (abilities.length) newSearch.set("abilities", abilities.join(",")); else newSearch.delete("abilities");
+        if (elements.length) newSearch.set("element", elements.join(","));
+        if (type) newSearch.set("type", type);
+        if (abilities.length) newSearch.set("abilities", abilities.join(","));
 
         router.push(`?${newSearch.toString()}`);
         if (typeof window !== "undefined") window.scrollTo({top: 0, behavior: "smooth"});
     };
 
     const onClear = () => {
-        const newSearch = new URLSearchParams(searchParams);
-        newSearch.set("page", "1");
-        newSearch.delete("element");
-        newSearch.delete("type");
-        newSearch.delete("abilities");
         setElements([]);
         setType("");
         setAbilities([]);
-        router.push(`?${newSearch.toString()}`);
+        router.push("?page=1");
         if (typeof window !== "undefined") window.scrollTo({top: 0, behavior: "smooth"});
     };
 
