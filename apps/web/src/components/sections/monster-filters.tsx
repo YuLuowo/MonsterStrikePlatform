@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ELEMENTS, TYPES, ABILITIES } from "@/lib/filter-maps";
 import { Button } from "@/components/ui/button";
@@ -19,15 +19,18 @@ export default function MonsterFilters() {
 
     const initElement = searchParams.get("element") ?? "";
     const initType = searchParams.get("type") ?? "";
-    const initAbilities = (() => {
-        const a = searchParams.get("abilities") ?? "";
-        return a ? a.split(",").filter(Boolean) : [];
-    })();
+    const initAbilities = searchParams.get("abilities")?.split(",").filter(Boolean) ?? [];
 
-    const initElements = initElement ? initElement.split(",").map((s) => s.trim()).filter(Boolean) : [];
+    const initElements = initElement.split(",").filter(Boolean);
     const [elements, setElements] = useState<string[]>(initElements);
     const [type, setType] = useState<string | "">(initType);
     const [abilities, setAbilities] = useState<string[]>(initAbilities);
+
+    useEffect(() => {
+        setElements(searchParams.get("element")?.split(",").filter(Boolean) ?? []);
+        setType(searchParams.get("type") ?? "");
+        setAbilities(searchParams.get("abilities")?.split(",").filter(Boolean) ?? []);
+    }, [searchParams]);
 
     const toggleAbility = (ab: string) => {
         setAbilities((prev) => (prev.includes(ab) ? prev.filter((p) => p !== ab) : [...prev, ab]));

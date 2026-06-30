@@ -51,12 +51,10 @@ export function AllMonstersSection() {
 
     useEffect(() => {
         const pageParam = searchParams.get("page");
-        const pageNum = pageParam ? Number(pageParam) : 1;
-
-        if (!pageParam || !Number.isInteger(pageNum) || pageNum < 1) {
-            const newSearchParams = new URLSearchParams(searchParams);
+        if (!pageParam) {
+            const newSearchParams = new URLSearchParams(searchParams.toString());
             newSearchParams.set("page", "1");
-            router.push(`?${newSearchParams.toString()}`, {scroll: false});
+            router.replace(`?${newSearchParams.toString()}`, { scroll: false });
         }
     }, [searchParams, router]);
 
@@ -117,7 +115,7 @@ export function AllMonstersSection() {
 
     return (
         <div className="w-full max-w-6xl mx-auto py-8">
-            <MonsterFilters key={String(searchParams)} />
+            <MonsterFilters />
             {isLoading && (
                 <div
                     className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-2 mb-8 px-3 md:px-0">
