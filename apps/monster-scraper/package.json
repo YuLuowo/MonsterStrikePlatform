@@ -3,7 +3,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "scraper:monsters": "tsx src/index.ts",
+        "scraper": "tsx src/index.ts",
+        "scraper:monsters": "tsx src/index.ts monster",
+        "scraper:linkup": "tsx src/index.ts linkup",
         "check": "tsc --noEmit"
     },
     "dependencies": {

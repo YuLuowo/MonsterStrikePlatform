@@ -30,7 +30,7 @@ export interface MonsterRawData {
 
 const DEFAULT_LIMIT = 100;
 const DEFAULT_TABLE_FOOTER = "&ensp;";
-const BASE_URL = "https://wiki.biligame.com/gwdz";
+const DEFAULT_BASE_URL = "https://wiki.biligame.com/gwdz";
 
 function findJsVariable(
     pattern: RegExp | string,
@@ -174,7 +174,7 @@ function extractAbilities(passive: string[]): string[] {
     return [...abilities];
 }
 
-export function parseMonsters(html: string): MonsterRawData[] {
+export function parseMonsters(html: string, baseUrl: string = DEFAULT_BASE_URL): MonsterRawData[] {
     const $ = load(html);
     const monsters: MonsterRawData[] = [];
 
@@ -230,7 +230,7 @@ export function parseMonsters(html: string): MonsterRawData[] {
         if (img.length) {
             const src = img.attr("src");
             if (src) {
-                image_url = new URL(src, BASE_URL).href;
+                image_url = new URL(src, baseUrl).href;
 
                 let imgMatch = src.match(/70px-(\d+)\.jpg/);
                 if (!imgMatch) {
@@ -257,7 +257,7 @@ export function parseMonsters(html: string): MonsterRawData[] {
             const lastLink = links[links.length - 1];
             const href = $(lastLink).attr("href");
             if (href) {
-                source_url = new URL(href, BASE_URL).href;
+                source_url = new URL(href, baseUrl).href;
             }
             name = $(lastLink).text().trim();
         }
@@ -324,6 +324,42 @@ export function parseMonsters(html: string): MonsterRawData[] {
     });
 
     return monsters;
+}
+
+export interface LinkupRawData {
+    name: string | null;
+    url: string | null;
+    time: string | null;
+}
+
+/**
+ * 解析「联动一览」頁面的分頁查詢結果。
+ * 每一筆結果由「時間範圍 (<small>)」+「名稱 (font-size:20px;font-weight:bold 的 <a>)」組成，
+ * 時間標籤的 class 會變動（m4/m5/m6/m7...），因此改用相鄰元素關係定位，而非固定 class。
+ */
+export function parseLinkups(html: string, baseUrl: string = DEFAULT_BASE_URL): LinkupRawData[] {
+    const $ = load(html);
+    const results: LinkupRawData[] = [];
+
+    $('div[style*="font-size:20px"][style*="font-weight:bold"]').each((_, el) => {
+        const $nameDiv = $(el);
+        const link = $nameDiv.find("a").first();
+
+        const name = link.text().trim() || null;
+        const href = link.attr("href");
+        const url = href ? new URL(href, baseUrl).href : null;
+
+        const timeWrapper = $nameDiv.parent().prev();
+        const time = timeWrapper.find("small").first().text().trim() || null;
+
+        if (!name && !url) {
+            return;
+        }
+
+        results.push({ name, url, time });
+    });
+
+    return results;
 }
 
 export function parseCount(html: string): number {
