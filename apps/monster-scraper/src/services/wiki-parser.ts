@@ -230,7 +230,17 @@ export function parseMonsters(html: string, baseUrl: string = DEFAULT_BASE_URL):
         if (img.length) {
             const src = img.attr("src");
             if (src) {
-                image_url = new URL(src, baseUrl).href;
+                const resolved = new URL(src, baseUrl);
+                const pathname = resolved.pathname || "";
+                if (pathname.includes("/thumb/")) {
+                    const [prefix, after] = pathname.split("/thumb/");
+                    const lastSlash = after.lastIndexOf("/");
+                    const filePath = lastSlash > -1 ? after.slice(0, lastSlash) : after;
+                    const newPath = `${prefix}/${filePath}`;
+                    image_url = `${resolved.protocol}//${resolved.host}${newPath}`;
+                } else {
+                    image_url = resolved.href;
+                }
 
                 let imgMatch = src.match(/70px-(\d+)\.jpg/);
                 if (!imgMatch) {
